@@ -25,6 +25,7 @@ public final class TransactionID {
     /**
      * Requires: id is a non-null string.
      * Effects: Constructs a TransactionID from a pre-existing string (used for loading from storage).
+     * @param id the string representation of the ID
      */
     public TransactionID(String id) {
         if (id == null) {
@@ -36,6 +37,7 @@ public final class TransactionID {
     /**
      * Requires: True
      * Effects: Returns the string representation of this ID.
+     * @return the string representation of this TransactionID
      */
     public String getID() {
         return id;
@@ -45,6 +47,8 @@ public final class TransactionID {
      * Requires: True
      * Effects: Compares this TransactionID to the specified object. Returns true if and only if
      * the argument is a TransactionID object and contains the same internal ID string.
+     * @param o the object to compare with
+     * @return true if the objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
@@ -58,6 +62,7 @@ public final class TransactionID {
     /**
      * Requires: True
      * Effects: Returns a hash code value for the object, consistent with equals().
+     * @return the hash code value for this TransactionID
      */
     @Override
     public int hashCode() {
@@ -67,6 +72,7 @@ public final class TransactionID {
     /**
      * Requires: True
      * Effects: Returns a string representation of the TransactionID.
+     * @return the string representation of this TransactionID
      */
     @Override
     public String toString() {

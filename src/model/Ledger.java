@@ -71,6 +71,7 @@ public class Ledger implements Serializable {
     /**
      * Requires: t is a valid Transaction (non-null, positive amount, non-null date, etc.).
      * Effects: Adds the given transaction to the ledger, and notifies all observers.
+     * @param t the Transaction to add to the ledger
      */
     public void addTransaction(Transaction t) {
         if (transactions.containsKey(t.getId())) {
@@ -85,6 +86,8 @@ public class Ledger implements Serializable {
     /**
      * Requires: id is a non-null TransactionID that exists in the ledger.
      * Effects: Removes the transaction associated with the given ID, and notifies all observers.
+     * @param id the TransactionID of the transaction to delete
+     * @return true if the transaction was successfully deleted, false if not found
      */
     public boolean deleteTransaction(TransactionID id) {
         if (transactions.remove(id) != null) {
@@ -100,6 +103,8 @@ public class Ledger implements Serializable {
      * Effects: Resolves a TransactionID by its string prefix. If exactly one
      * matching ID exists, returns that TransactionID. If none or more than one
      * match is found, returns null to indicate an ambiguous or missing match.
+     * @param prefix the string prefix to search for
+     * @return the matching TransactionID or null if ambiguous/missing
      */
     public TransactionID resolveIdByPrefix(String prefix) {
         if (prefix == null || prefix.isEmpty()) {
@@ -120,6 +125,8 @@ public class Ledger implements Serializable {
      * Requires: t is a Transaction object whose ID exists in the ledger.
      * Effects: Replaces the existing transaction with the updated Transaction object t,
      * and notifies all observers.
+     * @param t the updated Transaction object
+     * @return true if the transaction was successfully updated, false if not found
      */
     public boolean updateTransaction(Transaction t) {
         if (transactions.containsKey(t.getId())) {
@@ -135,6 +142,7 @@ public class Ledger implements Serializable {
      * Requires: True
      * Effects: Returns an unmodifiable list of all transactions, sorted chronologically.
      * (Requirement: View Transaction List)
+     * @return an unmodifiable list of all transactions sorted by date (newest first)
      */
     public List<Transaction> getAllTransactionsSorted() {
         List<Transaction> list = new ArrayList<>(transactions.values());
@@ -147,6 +155,10 @@ public class Ledger implements Serializable {
      * Requires: True
      * Effects: Calculates the total amount for the given type and within the date range.
      * (Requirement: Display Expense and Income Summary)
+     * @param type the transaction type (EXPENSE or INCOME)
+     * @param start the start date of the range (inclusive)
+     * @param end the end date of the range (inclusive)
+     * @return the total amount for the specified type within the date range
      */
     public double calculateTotal(Transaction.Type type, LocalDate start, LocalDate end) {
         return transactions.values().stream()
@@ -161,6 +173,8 @@ public class Ledger implements Serializable {
      * Requires: True
      * Effects: Returns a map of category names to their total expense amount for the current month.
      * (Requirement: Display Expense and Income Summary)
+     * @param date the date to determine the month for the summary
+     * @return a map of category names to their total expense amounts for the month
      */
     public Map<String, Double> getMonthlyExpenseSummaryByCategory(LocalDate date) {
         LocalDate startOfMonth = date.withDayOfMonth(1);
@@ -178,6 +192,10 @@ public class Ledger implements Serializable {
     /**
      * Requires: start and end define an inclusive range; type non-null
      * Effects: Returns a map of category -> total amount for the given type within [start, end].
+     * @param type the transaction type (EXPENSE or INCOME)
+     * @param start the start date of the range (inclusive)
+     * @param end the end date of the range (inclusive)
+     * @return a map of category names to their total amounts for the specified type and date range
      */
     public Map<String, Double> getCategorySummaryByDateRange(Transaction.Type type, LocalDate start, LocalDate end) {
         return transactions.values().stream()
@@ -195,6 +213,7 @@ public class Ledger implements Serializable {
     /**
      * Requires: True
      * Effects: Returns the Budget object.
+     * @return the Budget object associated with this ledger
      */
     public Budget getBudget() {
         return budget;
@@ -219,6 +238,8 @@ public class Ledger implements Serializable {
     /**
      * Requires: id is not null
      * Effects: Returns the Transaction for the given ID, or null if not found.
+     * @param id the TransactionID to search for
+     * @return the Transaction with the given ID, or null if not found
      */
     public Transaction getTransactionById(TransactionID id) {
         return transactions.get(id);
@@ -227,6 +248,8 @@ public class Ledger implements Serializable {
     /**
      * Requires: prefix is non-null/non-empty
      * Effects: Returns the Transaction matching the unique ID prefix, or null if none/ambiguous.
+     * @param prefix the string prefix to search for
+     * @return the Transaction matching the prefix, or null if ambiguous/missing
      */
     public Transaction getTransactionByPrefix(String prefix) {
         TransactionID resolved = resolveIdByPrefix(prefix);

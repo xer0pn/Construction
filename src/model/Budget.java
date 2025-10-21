@@ -26,6 +26,7 @@ public class Budget implements Serializable {
     /**
      * Requires: newLimit >= 0
      * Effects: Sets the new budget limit.
+     * @param newLimit the new budget limit (must be non-negative)
      */
     public void setLimit(double newLimit) {
         if (newLimit < 0) {
@@ -37,6 +38,7 @@ public class Budget implements Serializable {
     /**
      * Requires: newPeriod is not null
      * Effects: Sets the budget tracking period.
+     * @param newPeriod the new budget period (WEEKLY or MONTHLY)
      */
     public void setPeriod(Period newPeriod) {
         if (newPeriod == null) {
@@ -48,6 +50,7 @@ public class Budget implements Serializable {
     /**
      * Requires: True
      * Effects: Returns the budget limit.
+     * @return the current budget limit
      */
     public double getLimit() {
         return limit;
@@ -56,6 +59,7 @@ public class Budget implements Serializable {
     /**
      * Requires: True
      * Effects: Returns the budget period.
+     * @return the current budget period
      */
     public Period getPeriod() {
         return period;
@@ -64,6 +68,8 @@ public class Budget implements Serializable {
     /**
      * Requires: date is the current date.
      * Effects: Calculates and returns the start date of the current budget period.
+     * @param date the date to determine the period start
+     * @return the start date of the current budget period
      */
     public LocalDate getPeriodStartDate(LocalDate date) {
         if (period == Period.MONTHLY) {
@@ -77,6 +83,8 @@ public class Budget implements Serializable {
     /**
      * Requires: date is the current date.
      * Effects: Calculates and returns the end date of the current budget period.
+     * @param date the date to determine the period end
+     * @return the end date of the current budget period
      */
     public LocalDate getPeriodEndDate(LocalDate date) {
         if (period == Period.MONTHLY) {

@@ -27,6 +27,7 @@ public final class PersistenceManager {
     /**
      * Requires: True
      * Effects: Returns the single instance of the PersistenceManager (Lazy initialization).
+     * @return the singleton instance of PersistenceManager
      */
     public static PersistenceManager getInstance() {
         // Singleton Implementation
@@ -40,6 +41,7 @@ public final class PersistenceManager {
      * Requires: ledger is not null.
      * Effects: Serializes the Ledger object to the file path.
      * (Functional Requirement: Persistent Data Storage)
+     * @param ledger the Ledger object to save
      */
     public void saveLedger(Ledger ledger) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
@@ -55,6 +57,7 @@ public final class PersistenceManager {
      * Requires: True
      * Effects: Attempts to deserialize the Ledger object from the file path. Returns a new
      * Ledger if the file does not exist or an error occurs during loading.
+     * @return the loaded Ledger object or a new Ledger if loading fails
      */
     public Ledger loadLedger() {
         File file = new File(FILE_PATH);
