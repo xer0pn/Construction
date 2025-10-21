@@ -182,10 +182,5 @@ The application supports natural language transaction input:
 4. **Extensibility**: Well-designed ADTs and patterns for future enhancements
 5. **Reliability**: Comprehensive error handling and data persistence
 
-## 📝 License
-
-This project is part of a software engineering course demonstrating advanced Java concepts including MVC architecture, design patterns, and proper software engineering practices.
-
----
 
 *Built with Java Swing, following MVC architecture and implementing Observer and Singleton design patterns.*
