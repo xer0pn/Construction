@@ -1,0 +1,22 @@
+# Exclude data files
+expense_tracker_data.ser
+
+# Exclude documentation files
+PRD.md
+ExpenseTracker_ADT_Specification.md
+README.md
+
+# Exclude compiled Java classes
+bin/
+*.class
+
+# Exclude IDE files
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# Exclude OS files
+.DS_Store
+Thumbs.db

@@ -48,6 +48,7 @@ public class ExpenseView extends JFrame implements IObserver {
         // Main Panel with Tabs
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Add Transaction", createAddTransactionPanel());
+        tabbedPane.addTab("Quick Add (Natural Language)", createQuickAddPanel());
         tabbedPane.addTab("View Transactions", createTransactionListPanel());
         tabbedPane.addTab("Summary & Budget", createSummaryBudgetPanel());
         add(tabbedPane, BorderLayout.CENTER);
@@ -118,6 +119,106 @@ public class ExpenseView extends JFrame implements IObserver {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Validation Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+
+        return panel;
+    }
+
+    /**
+     * Creates the panel for quick transaction entry using natural language parsing.
+     * Uses Regular Expressions to parse complex input strings.
+     * (Requirement: Regular Expressions, Advanced Input Parsing)
+     */
+    private JPanel createQuickAddPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        // Main input area
+        JPanel inputPanel = new JPanel(new BorderLayout(5, 5));
+        
+        JLabel instructionLabel = new JLabel("<html><b>Quick Add Transaction (Natural Language)</b><br/>" +
+                "Enter transaction details in natural language format:</html>");
+        inputPanel.add(instructionLabel, BorderLayout.NORTH);
+
+        JTextField quickInputField = new JTextField(50);
+        quickInputField.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        inputPanel.add(quickInputField, BorderLayout.CENTER);
+
+        // Type selection
+        JPanel typePanel = new JPanel(new FlowLayout());
+        JComboBox<Transaction.Type> quickTypeChooser = new JComboBox<>(Transaction.Type.values());
+        JTextField defaultCategoryField = new JTextField(15);
+        JButton quickAddButton = new JButton("Add Transaction");
+        
+        typePanel.add(new JLabel("Type:"));
+        typePanel.add(quickTypeChooser);
+        typePanel.add(new JLabel("Default Category:"));
+        typePanel.add(defaultCategoryField);
+        typePanel.add(quickAddButton);
+        
+        inputPanel.add(typePanel, BorderLayout.SOUTH);
+
+        // Examples and help text
+        JTextArea examplesArea = new JTextArea(8, 50);
+        examplesArea.setEditable(false);
+        examplesArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 11));
+        examplesArea.setText(
+            "EXAMPLES:\n" +
+            "• coffee $5.50 category:food on:yesterday\n" +
+            "• lunch $12.99 category:dining on:today\n" +
+            "• salary $3000 category:work on:2024-01-15\n" +
+            "• gas $45.20 category:transportation\n" +
+            "• groceries $85.75 category:food on:tomorrow\n\n" +
+            "FORMAT RULES:\n" +
+            "• Description: Any text before the amount\n" +
+            "• Amount: Required, with optional $ prefix (e.g., $5.50 or 5.50)\n" +
+            "• Category: Optional, use 'category:name' (defaults to specified category)\n" +
+            "• Date: Optional, use 'on:date' where date can be:\n" +
+            "  - today, yesterday, tomorrow\n" +
+            "  - YYYY-MM-DD format (e.g., 2024-01-15)\n\n" +
+            "The Regular Expression parser will extract all components automatically!"
+        );
+        
+        JScrollPane examplesScroll = new JScrollPane(examplesArea);
+        examplesScroll.setBorder(new EmptyBorder(5, 0, 0, 0));
+
+        // Layout
+        panel.add(inputPanel, BorderLayout.NORTH);
+        panel.add(examplesScroll, BorderLayout.CENTER);
+
+        // Action listener for quick add button
+        quickAddButton.addActionListener((ActionEvent e) -> {
+            try {
+                String input = quickInputField.getText().trim();
+                Transaction.Type type = (Transaction.Type) quickTypeChooser.getSelectedItem();
+                String defaultCategory = defaultCategoryField.getText().trim();
+                
+                if (input.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please enter transaction details.", "Input Required", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                if (defaultCategory.isEmpty()) {
+                    defaultCategory = "general"; // Fallback category
+                }
+
+                // Use the regex parsing method from controller
+                controller.addTransactionFromInput(input, type, defaultCategory);
+                
+                JOptionPane.showMessageDialog(this, "Transaction added successfully using regex parsing!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Clear the input field
+                quickInputField.setText("");
+                
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, "Parsing Error: " + ex.getMessage() + 
+                    "\n\nPlease check the format and try again.", "Regex Parsing Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Unexpected error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        // Add Enter key support
+        quickInputField.addActionListener(quickAddButton.getActionListeners()[0]);
 
         return panel;
     }
