@@ -14,6 +14,21 @@ public class Budget implements Serializable {
     private double limit; // The budget amount
     private Period period; // Weekly or Monthly
 
+    // --- Representation Invariant (RI) ---
+    /*
+     * RI: "The limit field must be non-negative (limit >= 0). The period field is non-null
+     * and must be one of the valid Period enum values (WEEKLY or MONTHLY)."
+     */
+
+    // --- Abstraction Function (AF) ---
+    /*
+     * AF(r) = "Represents the user's budget configuration for expense tracking, where the
+     * internal representation (r) consists of a non-negative monetary limit (limit) that
+     * defines the maximum spending amount, and a time period (period) that specifies whether
+     * the budget is tracked on a weekly or monthly basis. The budget settings can be modified
+     * by the user to adjust spending limits and tracking periods."
+     */
+
     /**
      * Requires: True
      * Effects: Constructs a default budget (e.g., $1000 monthly).
@@ -21,6 +36,17 @@ public class Budget implements Serializable {
     public Budget() {
         this.limit = 1000.00;
         this.period = Period.MONTHLY;
+        checkRep(); // Check RI after construction
+    }
+
+    /**
+     * Requires: The RI holds true.
+     * Effects: Asserts that the Representation Invariant holds true.
+     * Will throw an AssertionError if the RI is violated.
+     */
+    private void checkRep() {
+        assert limit >= 0 : "Budget limit must be non-negative.";
+        assert period != null : "Budget period cannot be null.";
     }
 
     /**
@@ -33,6 +59,7 @@ public class Budget implements Serializable {
             throw new IllegalArgumentException("Budget limit cannot be negative.");
         }
         this.limit = newLimit;
+        checkRep(); // Check RI after mutation
     }
 
     /**
@@ -45,6 +72,7 @@ public class Budget implements Serializable {
             throw new IllegalArgumentException("Period cannot be null.");
         }
         this.period = newPeriod;
+        checkRep(); // Check RI after mutation
     }
 
     /**

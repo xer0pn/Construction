@@ -20,6 +20,25 @@ public class Transaction implements Serializable {
     private String category;
     private String description;
 
+    // --- Representation Invariant (RI) ---
+    /*
+     * RI: "The id field is non-null and immutable. The type field is non-null and immutable.
+     * The amount field must always be strictly positive (> 0). The date field is non-null.
+     * The category field is non-null and non-empty (not trimmed to empty string).
+     * The description field is non-null and non-empty (not trimmed to empty string)."
+     */
+
+    // --- Abstraction Function (AF) ---
+    /*
+     * AF(r) = "Represents a single financial transaction entry in a user's expense tracker,
+     * where the internal representation (r) consists of an immutable unique identifier (id),
+     * an immutable transaction type (EXPENSE or INCOME), a mutable monetary amount (amount),
+     * a mutable date of occurrence (date), a mutable category classification (category),
+     * and a mutable human-readable description (description). The transaction serves as an
+     * atomic record of a financial event that can be edited but retains its identity through
+     * the immutable ID."
+     */
+
     /**
      * Requires: amount > 0, date is not null, type is not null, category and description are non-null.
      * Effects: Constructs a new Transaction with a new unique ID.
@@ -41,6 +60,21 @@ public class Transaction implements Serializable {
         this.date = date;
         this.category = category;
         this.description = description;
+        checkRep(); // Check RI after construction
+    }
+
+    /**
+     * Requires: The RI holds true.
+     * Effects: Asserts that the Representation Invariant holds true.
+     * Will throw an AssertionError if the RI is violated.
+     */
+    private void checkRep() {
+        assert id != null : "TransactionID cannot be null.";
+        assert type != null : "Transaction type cannot be null.";
+        assert amount > 0 : "Transaction amount must be positive.";
+        assert date != null : "Transaction date cannot be null.";
+        assert category != null && !category.trim().isEmpty() : "Category cannot be null or empty.";
+        assert description != null && !description.trim().isEmpty() : "Description cannot be null or empty.";
     }
 
     // --- Accessors (Getters) ---
@@ -111,6 +145,7 @@ public class Transaction implements Serializable {
             throw new IllegalArgumentException("Amount must be positive.");
         }
         this.amount = newAmount;
+        checkRep(); // Check RI after mutation
     }
 
     /**
@@ -123,6 +158,7 @@ public class Transaction implements Serializable {
             throw new IllegalArgumentException("Date cannot be null.");
         }
         this.date = newDate;
+        checkRep(); // Check RI after mutation
     }
 
     /**
@@ -135,6 +171,7 @@ public class Transaction implements Serializable {
             throw new IllegalArgumentException("Category cannot be empty.");
         }
         this.category = newCategory;
+        checkRep(); // Check RI after mutation
     }
 
     /**
@@ -147,6 +184,7 @@ public class Transaction implements Serializable {
             throw new IllegalArgumentException("Description cannot be empty.");
         }
         this.description = newDescription;
+        checkRep(); // Check RI after mutation
     }
 
     /**

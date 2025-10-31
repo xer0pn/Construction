@@ -14,12 +14,28 @@ import java.util.UUID;
 public final class TransactionID {
     private final String id;
 
+    // --- Representation Invariant (RI) ---
+    /*
+     * RI: "The id field is a non-null String. Once set during construction, it cannot be
+     * modified, ensuring immutability of the TransactionID."
+     */
+
+    // --- Abstraction Function (AF) ---
+    /*
+     * AF(r) = "Represents a unique, immutable identifier for a Transaction, where the
+     * internal representation (r) is a non-null String (typically a UUID) that serves as
+     * a unique key for identifying and referencing transactions within the system. The
+     * identifier maintains referential integrity and enables efficient Map-based storage
+     * and lookup operations."
+     */
+
     /**
      * Requires: True (no preconditions)
      * Effects: Constructs a new TransactionID with a randomly generated UUID string.
      */
     public TransactionID() {
         this.id = UUID.randomUUID().toString();
+        checkRep(); // Check RI after construction
     }
 
     /**
@@ -32,6 +48,16 @@ public final class TransactionID {
             throw new IllegalArgumentException("TransactionID string cannot be null.");
         }
         this.id = id;
+        checkRep(); // Check RI after construction
+    }
+
+    /**
+     * Requires: The RI holds true.
+     * Effects: Asserts that the Representation Invariant holds true.
+     * Will throw an AssertionError if the RI is violated.
+     */
+    private void checkRep() {
+        assert id != null : "TransactionID string cannot be null.";
     }
 
     /**
